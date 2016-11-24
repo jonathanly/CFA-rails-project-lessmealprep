@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   root 'profiles#index'
   resources :products do
     resources :reviews
+    resources :photos
     end
   resources :profiles
   devise_for :users

@@ -1,0 +1,19 @@
+---
+development:
+  cloud_name: drmecxmn4
+  api_key: '831198784967211'
+  api_secret: mmYMWiQDY1ebhZgcJHhtXciH76M
+  enhance_image_tag: true
+  static_image_support: false
+production:
+  cloud_name: drmecxmn4
+  api_key: '831198784967211'
+  api_secret: mmYMWiQDY1ebhZgcJHhtXciH76M
+  enhance_image_tag: true
+  static_image_support: true
+test:
+  cloud_name: drmecxmn4
+  api_key: '831198784967211'
+  api_secret: mmYMWiQDY1ebhZgcJHhtXciH76M
+  enhance_image_tag: true
+  static_image_support: false
