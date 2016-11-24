@@ -25,7 +25,6 @@ class ProfilesController < ApplicationController
   # POST /profiles.json
   def create
     user = current_user
-
     return redirect_to root_url, alert: 'You already have a profile' if user.profile.present?
 
     @profile = Profile.new(profile_params)
