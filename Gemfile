@@ -29,6 +29,7 @@ gem 'jbuilder', '~> 2.5'
 
 gem 'devise'
 gem 'carrierwave', '>= 1.0.0.rc', '< 2.0'
+gem 'cloudinary'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
