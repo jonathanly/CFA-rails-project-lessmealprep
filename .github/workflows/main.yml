@@ -1,7 +1,8 @@
 name: Wait 60 Seconds
 
 on:
-  push: [master]
+  push:
+    branches: [ master ]
   pull_request:
   workflow_dispatch:
 
