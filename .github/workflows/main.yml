@@ -17,8 +17,9 @@ jobs:
 
       - name: Display commit info
         run: |
-          echo "Current commit: $(git rev-parse HEAD)"
           echo "This is the merge commit of PR into base branch"
+          echo "Current commit: $(git rev-parse HEAD)"
+          echo "Ref: ${{ github.ref }}"
 
       - name: Wait for 3 seconds
         run: sleep 3
