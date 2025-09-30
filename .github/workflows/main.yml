@@ -71,21 +71,36 @@ jobs:
       - name: Query commit status info
         if: github.event_name == 'pull_request'
         run: |
-          echo "Querying PR #${{ github.event.pull_request.number }} for status information"
+          echo "Querying all statuses for commit: ${{ github.sha }}"
+          echo "Repository: ${{ github.repository }}"
           echo ""
 
+          # Query commit statuses (legacy status API)
+          echo "=== Commit Statuses (Legacy API) ==="
           STATUS_DATA=$(curl -s -H "Authorization: token ${{ github.token }}" \
                -H "Accept: application/vnd.github.v3+json" \
-               "https://api.github.com/repos/jonathanly/${{ github.repository }}/commits/$HEAD_SHA/statuses")
+               "https://api.github.com/repos/${{ github.repository }}/commits/${{ github.sha }}/status")
+
+          echo "Combined state: $(echo "$STATUS_DATA" | jq -r '.state')"
+          echo ""
+          echo "All statuses:"
+          echo "$STATUS_DATA" | jq -r '.statuses[] | "  [\(.state)] \(.context) - \(.description)"'
 
           echo ""
-          echo "Statuses for HEAD SHA ($HEAD_SHA):"
-          echo "$STATUS_DATA" | jq -r '.statuses[]? | "\(.context): \(.state) - \(.description)"'
+          echo "=== Check Runs (newer API used by GitHub Actions) ==="
+          CHECK_RUNS=$(curl -s -H "Authorization: token ${{ github.token }}" \
+               -H "Accept: application/vnd.github.v3+json" \
+               "https://api.github.com/repos/${{ github.repository }}/commits/${{ github.sha }}/check-runs")
+
+          echo "Total check runs: $(echo "$CHECK_RUNS" | jq -r '.total_count')"
+          echo ""
+          echo "All check runs:"
+          echo "$CHECK_RUNS" | jq -r '.check_runs[] | "  [\(.status)/\(.conclusion // "pending")] \(.name) - \(.html_url)"'
 
           echo ""
-          echo "Workflow context information:"
-          echo "github.sha (merge commit): ${{ github.sha }}"
-          echo "github.event.pull_request.head.sha (PR head): ${{ github.event.pull_request.head.sha }}"
+          echo "=== Context Information ==="
+          echo "Event type: ${{ github.event_name }}"
+          echo "github.sha (workflow commit): ${{ github.sha }}"
 
       - name: Wait for 3 seconds
         run: sleep 3
