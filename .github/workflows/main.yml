@@ -57,7 +57,12 @@ jobs:
 
           STATUS_DATA=$(curl -s -H "Authorization: token ${{ github.token }}" \
                -H "Accept: application/vnd.github.v3+json" \
-               "https://api.github.com/repos/${{ github.repository }}/commits/$HEAD_SHA/status")
+               "https://api.github.com/repos/jonathanly/${{ github.repository }}/commits/$HEAD_SHA/statuses")
+
+          echo ""
+          echo "Workflow context information:"
+          echo "github.sha (merge commit): ${{ github.sha }}"
+          echo "github.event.pull_request.head.sha (PR head): ${{ github.event.pull_request.head.sha }}"
 
           echo ""
           echo "Full response:"
@@ -71,7 +76,7 @@ jobs:
 
           STATUS_DATA=$(curl -s -H "Authorization: token ${{ github.token }}" \
                -H "Accept: application/vnd.github.v3+json" \
-               "https://api.github.com/repos/${{ github.repository }}/commits/$HEAD_SHA/status")
+               "https://api.github.com/repos/jonathanly/${{ github.repository }}/commits/$HEAD_SHA/statuses")
 
           echo ""
           echo "Statuses for HEAD SHA ($HEAD_SHA):"
