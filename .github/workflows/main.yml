@@ -21,7 +21,7 @@ jobs:
           echo "Checking out refspec: ${{ github.ref }}"
           echo "Current commit: $(git rev-parse HEAD)"
 
-      - name: Check commit status via GitHub API
+      - name: Check PR info via GitHub API
         run: |
           echo "Querying PR #${{ github.event.pull_request.number }} for status information"
           echo ""
@@ -31,8 +31,8 @@ jobs:
                -H "Accept: application/vnd.github.v3+json" \
                "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}")
 
-          echo "Full response:"
-          echo "$PR_DATA" | jq '.'
+          echo "Merge commit SHA:"
+          echo "$PR_DATA" | jq -r '.merge_commit_sha'
 
           echo "PR Head SHA (where statuses are posted):"
           echo "$PR_DATA" | jq -r '.head.sha'
@@ -49,9 +49,30 @@ jobs:
           echo "Now checking statuses on the HEAD SHA..."
           HEAD_SHA=$(echo "$PR_DATA" | jq -r '.head.sha')
 
+          echo "Full response:"
+          echo "$PR_DATA" | jq '.'
+
           STATUS_DATA=$(curl -s -H "Authorization: token ${{ github.token }}" \
                -H "Accept: application/vnd.github.v3+json" \
-               "https://api.github.com/repos/${{ github.repository }}/commits/$HEAD_SHA/statuses")
+               "https://api.github.com/repos/${{ github.repository }}/commits/$HEAD_SHA/status")
+
+          echo ""
+          echo "Statuses for HEAD SHA ($HEAD_SHA):"
+          echo "$STATUS_DATA" | jq -r '.statuses[]? | "\(.context): \(.state) - \(.description)"'
+
+          echo ""
+          echo "Workflow context information:"
+          echo "github.sha (merge commit): ${{ github.sha }}"
+          echo "github.event.pull_request.head.sha (PR head): ${{ github.event.pull_request.head.sha }}"
+
+      - name: Query commit status info
+        run: |
+          echo "Querying PR #${{ github.event.pull_request.number }} for status information"
+          echo ""
+
+          STATUS_DATA=$(curl -s -H "Authorization: token ${{ github.token }}" \
+               -H "Accept: application/vnd.github.v3+json" \
+               "https://api.github.com/repos/${{ github.repository }}/commits/$HEAD_SHA/status")
 
           echo ""
           echo "Statuses for HEAD SHA ($HEAD_SHA):"
