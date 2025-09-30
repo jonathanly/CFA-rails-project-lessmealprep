@@ -12,8 +12,9 @@ jobs:
     steps:
       - name: Checkout merge commit
         uses: actions/checkout@v4
-        # By default on pull_request events, this checks out the merge commit
-        # (refs/pull/:prNumber/merge) which is what you want
+        with:
+          # Explicitly use github.ref which is refs/pull/:number/merge for PRs
+          ref: ${{ github.ref }}
 
       - name: Display commit info
         run: |
