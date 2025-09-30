@@ -36,6 +36,7 @@ jobs:
           echo "Merge commit SHA:"
           echo "$PR_DATA" | jq -r '.merge_commit_sha'
 
+          echo ""
           echo "PR Head SHA (where statuses are posted):"
           echo "$PR_DATA" | jq -r '.head.sha'
 
@@ -47,25 +48,20 @@ jobs:
           echo "Mergeable state:"
           echo "$PR_DATA" | jq -r '.mergeable_state'
 
+          echo "Full response:"
+          echo "$PR_DATA" | jq '.'
+
           echo ""
           echo "Now checking statuses on the HEAD SHA..."
           HEAD_SHA=$(echo "$PR_DATA" | jq -r '.head.sha')
-
-          echo "Full response:"
-          echo "$PR_DATA" | jq '.'
 
           STATUS_DATA=$(curl -s -H "Authorization: token ${{ github.token }}" \
                -H "Accept: application/vnd.github.v3+json" \
                "https://api.github.com/repos/${{ github.repository }}/commits/$HEAD_SHA/status")
 
           echo ""
-          echo "Statuses for HEAD SHA ($HEAD_SHA):"
-          echo "$STATUS_DATA" | jq -r '.statuses[]? | "\(.context): \(.state) - \(.description)"'
-
-          echo ""
-          echo "Workflow context information:"
-          echo "github.sha (merge commit): ${{ github.sha }}"
-          echo "github.event.pull_request.head.sha (PR head): ${{ github.event.pull_request.head.sha }}"
+          echo "Full response:"
+          echo "$STATUS_DATA" | jq '.'
 
       - name: Query commit status info
         if: github.event_name == 'pull_request'
