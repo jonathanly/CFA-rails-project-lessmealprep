@@ -20,11 +20,11 @@ jobs:
           echo "Current commit: $(git rev-parse HEAD)"
           echo "This is the merge commit of PR into base branch"
 
-      - name: Wait for 10 seconds
-        run: sleep 10
+      - name: Wait for 3 seconds
+        run: sleep 3
 
       - name: Success
-        run: echo "✅ Waited 10 seconds successfully!"
+        run: echo "✅ Waited 3 seconds successfully!"
 
   manual-approval:
     runs-on: ubuntu-latest
